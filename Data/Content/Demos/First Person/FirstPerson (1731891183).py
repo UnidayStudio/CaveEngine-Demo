@@ -34,6 +34,14 @@ class FirstPersonController(cave.Component):
 
 		self.transf.rotateOnYaw(motion.x)
 		self.camTransf.rotateOnPitch(motion.y)
+		
+		# Limiting the Camera Rotation:
+		self.camTransf.setEuler(
+			cave.Vector3(
+				cave.math.clampEulerAngle(self.camTransf.euler.x, 90, 270), 
+				self.camTransf.euler.y, 
+				self.camTransf.euler.z
+			))
 
 	def update(self):
 		self.movement()
