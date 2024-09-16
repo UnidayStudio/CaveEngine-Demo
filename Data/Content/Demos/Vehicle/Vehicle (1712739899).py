@@ -13,12 +13,16 @@ class VehicleController(cave.Component):
 		# This force variable is a way to don't instantly apply full throttle
 		# to the vehicle. Instead, we slowly increate it as you hold the acc.
 		self.force = 0.0
+		self.brakeForce = 0.0
 
 		self.lastSparkPos = cave.Vector3(0)
 		self.lastSparkTimer = cave.SceneTimer()
 
 	def addForce(self, value):
 		self.force = cave.math.clamp(self.force + value, 0.0, 1.0)
+
+	def addBrakeForce(self, value):
+		self.brakeForce = cave.math.clamp(self.brakeForce + value, 0.0, 1.0)
 
 	def movement(self):
 		dt = cave.getDeltaTime()
@@ -34,9 +38,12 @@ class VehicleController(cave.Component):
 			self.addForce(-dt * 0.5)
 			self.vehicle.idle()
 		
-		if events.pressed(cave.event.KEY_LCTRL):
-			self.vehicle.brake()
-		elif events.released(cave.event.KEY_LCTRL):
+		if events.active(cave.event.KEY_SPACE):
+			self.addBrakeForce(dt * 0.2)
+			print(self.brakeForce)
+			self.vehicle.brake(self.brakeForce)
+		else:
+			self.addBrakeForce(-dt * 2)
 			self.vehicle.brakeRelease()
 
 		if events.active(cave.event.KEY_A):
