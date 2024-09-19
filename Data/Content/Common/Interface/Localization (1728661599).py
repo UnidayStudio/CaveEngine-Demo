@@ -15,6 +15,11 @@ GAME_TEXTS = {
 	"restart" : ["Restart", "Reiniciar"],
 	"back to menu" : ["Back to Menu", "Voltar ao Menu"],
 
+	"previous" : ["Previous...", "Anterior..."],
+	"next" : ["Next...", "Próximo..."],
+
+	"particle demos" : ["Particle Demos", "Demos de Partículas"],
+
 	"demo select" : ["Select a Demo:", "Selecione um Exemplo:"],
 	"vehicle" : ["Vehicle Demo", "Carro"],
 	"first person" : ["First Person", "Primeira Pessoa"],
