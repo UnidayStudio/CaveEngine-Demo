@@ -8,3 +8,6 @@ Typings/
 # Local Files:
 editor.stats
 thumbnail.png
+
+# Cache Files:
+*.cache
