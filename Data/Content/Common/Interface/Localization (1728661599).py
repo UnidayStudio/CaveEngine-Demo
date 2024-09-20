@@ -23,6 +23,9 @@ GAME_TEXTS = {
 	"save" : ["Save", "Salvar"],
 	"load" : ["Load", "Carregar"],
 
+	"save pos" : ["Save Position", "Salvar Posição"],
+	"load pos" : ["Load Position", "Carregar Posição"],
+
 	"advanced demo" : ["Advanced Demo...", "Demo Avançado..."],
 
 	"demo select" : ["Select a Demo:", "Selecione um Exemplo:"],
