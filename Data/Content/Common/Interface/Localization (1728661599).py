@@ -19,6 +19,11 @@ GAME_TEXTS = {
 	"next" : ["Next...", "Próximo..."],
 
 	"particle demos" : ["Particle Demos", "Demos de Partículas"],
+	"save load" : ["Save/Load", "Salvar/Carregar"],
+	"save" : ["Save", "Salvar"],
+	"load" : ["Load", "Carregar"],
+
+	"advanced demo" : ["Advanced Demo...", "Demo Avançado..."],
 
 	"demo select" : ["Select a Demo:", "Selecione um Exemplo:"],
 	"vehicle" : ["Vehicle Demo", "Carro"],
