@@ -1,0 +1,20 @@
+{
+    "depth-prepass": true,
+    "post-processing": {
+        "asset-id": 0,
+        "name": ""
+    },
+    "resolution": {
+        "height": 1027,
+        "use-desktop": true,
+        "width": 1920
+    },
+    "shader-program": {
+        "asset-id": 0,
+        "name": ""
+    },
+    "shadow-resolution": {
+        "height": 2048,
+        "width": 2048
+    }
+}
