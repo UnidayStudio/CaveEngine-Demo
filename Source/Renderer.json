@@ -13,6 +13,12 @@
         "asset-id": 0,
         "name": ""
     },
+    "shadow-maps-multipliers": [
+        1.0,
+        3.0,
+        6.0,
+        10.0
+    ],
     "shadow-resolution": {
         "height": 2048,
         "width": 2048
