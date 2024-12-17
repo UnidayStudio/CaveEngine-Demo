@@ -1,8 +1,8 @@
 {
     "depth-prepass": true,
     "post-processing": {
-        "asset-id": 0,
-        "name": ""
+        "asset-id": 1725555000,
+        "name": "Post Processing"
     },
     "resolution": {
         "height": 1027,
