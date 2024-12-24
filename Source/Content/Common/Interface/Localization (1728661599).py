@@ -32,6 +32,7 @@ GAME_TEXTS = {
 	"vehicle" : ["Vehicle Demo", "Carro"],
 	"first person" : ["First Person", "Primeira Pessoa"],
 	"third person" : ["Third Person", "Terceira Pessoa"],
+	"top down"     : ["Top Down", "Top Down"],
 	
 	"language select" : ["Select a Language:", "Selecione um Idioma:"],
 	"language" : ["Language...", "Idioma..."],
