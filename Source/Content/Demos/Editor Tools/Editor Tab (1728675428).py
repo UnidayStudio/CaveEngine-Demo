@@ -1,3 +1,5 @@
+#editoronly
+
 import cave
 
 # This is meant for you to create your own Editor Tab Tools.
