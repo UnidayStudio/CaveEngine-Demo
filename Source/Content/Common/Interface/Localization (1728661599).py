@@ -33,7 +33,8 @@ GAME_TEXTS = {
 	"first person" : ["First Person", "Primeira Pessoa"],
 	"third person" : ["Third Person", "Terceira Pessoa"],
 	"top down"     : ["Top Down", "Top Down"],
-	"minecraft"     : ["Minecraft", "Minecraft"],
+	"minecraft"    : ["Minecraft", "Minecraft"],
+	"online game"  : ["Online Game", "Jogo Online"],
 	
 	"language select" : ["Select a Language:", "Selecione um Idioma:"],
 	"language" : ["Language...", "Idioma..."],
