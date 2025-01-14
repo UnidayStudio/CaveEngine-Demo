@@ -102,7 +102,13 @@ void main() {
 
 	// The shadow pass only updates the albedo texture is alphaValue is < 1.0!
 	if (inMaterial.alphaValue < 0.99999f) {
-		vec4 albedo = texture(inAlbedo, GetMaterialUV());
+		vec2 uv = GetMaterialUV();
+		vec4 albedo = texture(inAlbedo, uv);
+
+		if (entityTint.a >= 0) {
+			albedo.a *= entityTint.a;
+		}
+		albedo.a *= inMaterial.alphaValue;
 
 		float alphaThreshold = inMaterial.alphaValue - 0.01f; // - Bias
 		if (albedo.a < alphaThreshold) {
@@ -110,5 +116,6 @@ void main() {
 		}
 	}
 }
+
 
 #endif // SHADER_SHADOW_PASS
