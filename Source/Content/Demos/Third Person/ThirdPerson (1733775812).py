@@ -38,11 +38,12 @@ class ThirdPersonController(cave.Component):
 		of the armature to the camera view direction, so let's do it here:
 		"""
 
-		if self.isAiming:
+		weight = self.animator.getLayerWeight(1)
+		if self.isAiming or weight > 0:
 			arm : cave.Armature = self.animator.armature.get()
 			bSpine = arm.getBone("mixamorig:Spine")
-			bSpine.lookAt(self.camTransf.getForwardVector(), cave.Vector3(-0.1, 1, 0))
-			bSpine.rotateOnYaw(-0.7)
+			bSpine.lookAtSmooth(self.camTransf.getForwardVector(), weight, cave.Vector3(-0.1, 1, 0))
+			bSpine.rotateOnYaw(-0.7 * weight)
 
 	def isAttacking(self) -> bool:
 		"""
