@@ -1,8 +1,11 @@
 import cave
+import cave.math
 
 class ThirdPersonController(cave.Component):
 	walkSpeed = 5.0
 	runSpeed = 8.0
+
+	debugIk = False
 
 	def start(self, scene: cave.Scene):
 		self.transf = self.entity.getTransform()
@@ -32,6 +35,89 @@ class ThirdPersonController(cave.Component):
 		# We will assign a callback for the armature:
 		self.animator.addPostEvaluationCallback(self.postEvaluate)
 
+		self.footIkBlend = {
+			"mixamorig:LeftFoot"  : 1.0,
+			"mixamorig:RightFoot" : 1.0,
+		}
+		self.fookIkHipsOffset = 0.0
+
+	def calculateFootIk(self, boneName: str):
+		dt = cave.getDeltaTime()
+
+		self.footIkBlend[boneName] += dt if self.character.onGround() else -dt
+		self.footIkBlend[boneName] = cave.math.clamp(self.footIkBlend[boneName], 0.0, 1.0)
+
+		arm : cave.Armature = self.animator.armature.get()
+		bone = arm.getBone(boneName)
+
+		# Bone Transforms are local to the Armature transform, so we
+		# need to manually move the transformation back and forth.
+		worldPos = self.meshTransf.transformVector(bone.getWorldPosition())
+
+		# I'm using the animation's Y position of the foot to blend out
+		# the IK, because when the character raises his leg, of course we
+		# no longer wants to apply the technique. In this specific character
+		# and set of animations, the feet is "on ground" when ti's around 
+		# the value of 0.14 on the Y axis. You can test this in yours by
+		# simply printing this height value to the console while idling.
+		height = bone.getWorldPosition().y
+
+		blend = cave.math.mapRange(height, 0.14, 0.22, 0.0, 1.0)
+		blend = 1.0 - cave.math.clamp(blend, 0.0, 1.0)
+		blend = self.footIkBlend[boneName] * blend
+
+		# Raycasting the Ground, from the Feet position:
+		res = self.entity.getScene().rayCast(
+			worldPos + cave.Vector3(0, 0.5, 0), 
+			worldPos - cave.Vector3(0, 0.5, 0)
+		)
+		pos = None
+
+		# If it finds a ground, align the Foot with IK:
+		if res.hit:
+			# I'm adding 0.1 here to compensate for the Feet thickness.
+			pos = self.meshTransf.untransformVector(res.position) + cave.Vector3(0, 0.1, 0)
+
+		return bone, pos, blend
+	
+	def applyFootIk(self):
+		# I'm not immediately applying the Foot IK because I also need to calculate
+		# an offset to apply to the Hips, so the entire character can move a bit up
+		# or down do compensate if the terrain is too steep and one of the legs needs
+		# to be way down. If we don't compensate for that, one leg will be floating
+		# most of the times.
+		boneL, posL, blendL = self.calculateFootIk("mixamorig:LeftFoot")
+		boneR, posR, blendR = self.calculateFootIk("mixamorig:RightFoot")
+
+		offsetY = 0.0
+		if posL: offsetY = min(offsetY, (posL.y - boneL.getWorldPosition().y) * blendL)
+		if posR: offsetY = min(offsetY, (posR.y - boneR.getWorldPosition().y) * blendR)
+
+		self.fookIkHipsOffset = cave.math.lerp(self.fookIkHipsOffset, offsetY, 0.1)
+
+		arm : cave.Armature = self.animator.armature.get()
+		hips = arm.getBone("mixamorig:Hips")
+
+		before = self.meshTransf.transformVector(hips.getWorldPosition())
+
+		# I'm compensating for the Height Change...
+		hips.setWorldPosition(hips.getWorldPosition() + cave.Vector3(0, self.fookIkHipsOffset, 0))
+
+		after = self.meshTransf.transformVector(hips.getWorldPosition())
+
+		if self.debugIk and cave.hasEditor():
+			scene = cave.getScene()
+
+			scene.addDebugArrow(before, after, cave.Vector3(1,0,0))
+			scene.addDebugSphere(self.meshTransf.getWorldPosition(), 0.2, cave.Vector3(0,1,0))
+			
+			if posL: scene.addDebugSphere(posL, 0.1, cave.Vector3(1,0,0))
+			if posR: scene.addDebugSphere(posR, 0.1, cave.Vector3(1,0,0))
+
+		# Finally, let's apply the IK when necessary:
+		if posL: boneL.inverseKinematics(posL, 2, blendL)
+		if posR: boneR.inverseKinematics(posR, 2, blendR)
+
 	def postEvaluate(self):
 		"""
 		In this callback, if the player is aiming, we want to align the Spine Bone
@@ -44,6 +130,9 @@ class ThirdPersonController(cave.Component):
 			bSpine = arm.getBone("mixamorig:Spine")
 			bSpine.lookAtSmooth(self.camTransf.getForwardVector(), weight, cave.Vector3(-0.1, 1, 0))
 			bSpine.rotateOnYaw(-0.7 * weight)
+
+		# IK for the Foot Placement:
+		self.applyFootIk()
 
 	def isAttacking(self) -> bool:
 		"""

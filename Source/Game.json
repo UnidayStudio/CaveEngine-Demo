@@ -1,4 +1,9 @@
 {
+    "game-settings": {
+        "fps": 60,
+        "limit-fps": true,
+        "v-sync": true
+    },
     "main-scene": {
         "asset-id": 0,
         "name": ""
